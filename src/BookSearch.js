@@ -1,5 +1,6 @@
 import React from 'react';
-import memoize from "memoize-one";
+import memoize from 'memoize-one';
+import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 
@@ -12,7 +13,7 @@ class BookSearch extends React.Component {
         error: false
     }
     
-    searchBook = (event) => {
+    searchBook = _.debounce((event) => {
 
         if (event.target.value !== "") {
 
@@ -43,13 +44,17 @@ class BookSearch extends React.Component {
                 error: false
             });
         }
+    },300)
+
+    onChangeSearch = (event) => {
+        event.persist();
+
+        this.searchBook(event);
     }
 
     getMyBooks = memoize((bookList) => {
     	const myBooks = {};
         bookList.map((book) => (myBooks[book.id] = book.shelf));
-
-        console.log(myBooks);
 
         return myBooks;
     })
@@ -73,7 +78,7 @@ class BookSearch extends React.Component {
                   <input
                     type="text"
                     placeholder="Search by title or author"
-                    onChange={this.searchBook}
+                    onChange={this.onChangeSearch}
                   />
                   
                 </div>

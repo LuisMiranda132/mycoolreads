@@ -12,7 +12,6 @@ class ShelfChanger extends React.Component {
     }
     
     onChange = (event) => {
-	console.log(event.target.value);
         this.props.onChange(event.target.value);
         this.setState({ selected: event.target.value});
     }

@@ -11,11 +11,11 @@ class BooksApp extends React.Component {
         bookList: []
     }
     
-    componentDidMount(){
-        BooksAPI.getAll()
-            .then((books) => (this.setState({
-                bookList: books
-            })));
+    async componentDidMount(){
+        const books = await BooksAPI.getAll();
+        this.setState({
+            bookList: books
+        });
     }
 
     changeShelf = (bookId, shelf) => {
@@ -61,13 +61,15 @@ class BooksApp extends React.Component {
         
         return (
             <div className="app">
-              <Route exact path='/' render={() => (<MainList changeShelf={this.changeShelf} bookList={this.state.bookList}/>
-              )}/>
-              <Route path='/search' render={() => (<BookSearch changeShelf={this.changeShelf} myBooks={this.state.bookList} />
-              )}/>
+              <Route exact path='/' >
+                <MainList changeShelf={this.changeShelf} bookList={this.state.bookList}/>
+              </Route>
+              <Route path='/search' >
+                <BookSearch changeShelf={this.changeShelf} myBooks={this.state.bookList} />
+              </Route>
             </div>
         );
     }
 }
 
-export default BooksApp
+export default BooksApp;
