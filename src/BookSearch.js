@@ -1,4 +1,5 @@
 import React from 'react';
+import memoize from "memoize-one";
 import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 
@@ -14,10 +15,20 @@ class BookSearch extends React.Component {
     searchBook = (event) => {
 
         if (event.target.value !== "") {
-            console.log(event.target.value);
+
             BooksAPI.search(event.target.value, 100)
                 .then((books) => {
                     if(Array.isArray(books)){
+                        
+                        books.map((book) => {
+                            
+                            if(this.getMyBooks(this.props.myBooks).hasOwnProperty(book.id)){
+                                book['shelf'] = this.getMyBooks(this.props.myBooks)[book.id];
+                            }
+
+                            return book;
+                        });
+                                                
                         this.setState({
                             bookList: books,
                             error: false
@@ -33,6 +44,16 @@ class BookSearch extends React.Component {
             });
         }
     }
+
+    getMyBooks = memoize((bookList) => {
+    	const myBooks = {};
+        bookList.map((book) => (myBooks[book.id] = book.shelf));
+
+        console.log(myBooks);
+
+        return myBooks;
+    })
+
 
     render(){
 
